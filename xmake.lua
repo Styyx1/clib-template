@@ -3,6 +3,7 @@ set_xmakever("3.0.0")
 
 -- includes (need xmake.lua file in the same directory)
 includes("lib")
+includes("extern/styyx-utils")
 
 -- set up for project
 set_project("plugin-template")
@@ -26,6 +27,7 @@ set_config("skyrim_ae", true)
 -- add plugin target
 target("plugin-template")
     add_deps("commonlibsse")
+    add_deps("styyx-util")
     if has_config("skyrim_ae") then
         set_targetdir("build/AE/skse/plugins")
     else
