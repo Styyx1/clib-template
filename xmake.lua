@@ -1,9 +1,21 @@
 -- set required xmake version
-set_xmakever("3.0.0")
+set_xmakever("2.8.2")
 
 -- includes (need xmake.lua file in the same directory)
-includes("lib")
-includes("extern/styyx-utils")
+local clib_path = os.getenv("CLIB_LOCATION")
+local utils_path = os.getenv("UTIL_LOCATION")
+
+if not clib_path then
+    includes("lib")
+else
+    includes(clib_path)
+end
+
+if not utils_path then
+    includes("extern/styyx-utils")
+else
+    includes(utils_path)
+end
 
 -- set up for project
 set_project("plugin-template")
@@ -17,12 +29,14 @@ set_warnings("allextra")
 -- xmake rules
 add_rules("mode.debug", "mode.releasedbg")
 set_defaultmode("releasedbg")
-add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
+add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"}) --useful for clion or vscode
+add_rules("plugin.vsxmake.autoupdate")
 
 -- commonlib options
 set_config("skyrim_ae", true)
 
 -- set_config("rex_toml", true) -- enable if you want to use rex_toml for config
+-- set_config("use-hook-utils", true) -- enable if you want to use StyyxUtils::HookUtils
 
 -- add plugin target
 target("plugin-template")
@@ -66,6 +80,7 @@ target("plugin-template")
 
 end)
 
+-- builds both game versions. use with ``xmake shiprelease``
 task("shiprelease")
     set_menu {
         usage = "xmake shiprelease",
