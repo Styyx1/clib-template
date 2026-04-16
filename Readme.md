@@ -2,8 +2,8 @@
 
 A CommonLibSSE plugin template using [xmake](https://xmake.io) as the build system, with integration of [styyx-utils](https://github.com/Styyx1/StyyxUtils).
 
-Supports both **Skyrim 1.5.97** and **Skyrim 1.6.1130+** from a single codebase but with separate dlls.   
-This is not a commonlibsse-ng template.
+Supports **Skyrim 1.5.97**, **Skyrim 1.6.1130+**, and optionally **Skyrim VR** from a single codebase but with separate DLLs.
+Flat Skyrim builds use the `lib/commonlibsse` submodule. VR builds use the `lib/commonlibVR` submodule. The two CommonLib submodules are selected by build config and are not included at the same time.
 
 ---
 
@@ -27,7 +27,7 @@ git clone --recurse-submodules https://github.com/your-name/your-plugin-name
 cd your-plugin-name
 ```
 
-The ``--recurse-submodules`` is important, it pulls in CommonLibSSE and styyx-utils automatically.
+The ``--recurse-submodules`` is important, it pulls in CommonLibSSE, CommonLibVR, and styyx-utils automatically.
 
 **Cloning directly?** If you cloned without the flag, run:
 ```bash
@@ -48,6 +48,12 @@ For **Skyrim SE**:
 xmake f --skyrim_ae=false
 ```
 
+For **Skyrim VR**:
+
+```bash
+xmake f --skyrim_vr=true
+```
+
 ### 3. Build
 
 ```bash
@@ -58,6 +64,7 @@ The compiled ``.dll`` and ``.pdb`` are automatically copied to:
 ```
 Distr/AE/SKSE/Plugins/   (AE build)
 Distr/SE/SKSE/Plugins/   (SE build)
+Distr/VR/SKSE/Plugins/   (VR build)
 ```
 
 ### 4. Rename the plugin
@@ -84,12 +91,12 @@ Set options with `xmake f --option=value` before building, or use ``set_config("
 | Option | Default | Description |
 | -       |-         | -            |
 | ``skyrim_ae``| ``true`` | Target Skyrim AE. Set to``false`` for SE |
+| ``skyrim_vr``| ``false`` | Target Skyrim VR. This switches the CommonLib dependency from `lib/commonlibsse` to `lib/commonlibVR` |
 | ``use-hook-utils``| ``false`` | Enable hooking utilities from styyx-utils (pulls in xbyak) |
 | ``skse_xbyak``| ``false`` | Enable xbyak support in CommonLibSSE directly |
 | ``rex_toml``| ``false`` | Enable TOML config file support via CommonLibSSE |
 | ``rex_json``| ``false`` | Enable JSON config file support via CommonLibSSE |
 | ``rex_ini``| ``false`` | Enable INI config file support via CommonLibSSE |
-
 
 ### Example: Enable hook utilities
 
@@ -117,6 +124,29 @@ This will:
 1. Build the AE version → `Distr/AE/SKSE/Plugins/`
 2. Build the SE version → `Distr/SE/SKSE/Plugins/`
 3. Restore the default AE configuration
+
+To build only Skyrim VR:
+
+```bash
+xmake shiprelease-vr
+```
+
+This builds the VR version to `Distr/VR/SKSE/Plugins/`.
+
+---
+
+## Runtime differences
+
+Use `SKSE_TEMPLATE_SKYRIM_SE`, `SKSE_TEMPLATE_SKYRIM_AE`, or `SKSE_TEMPLATE_SKYRIM_VR` when your plugin needs runtime-specific code paths.
+
+For relocation values, the template provides:
+
+```cpp
+REL_ID(se, ae)
+REL_ID_3(se, ae, vr)
+OFFSET(se, ae)
+OFFSET_3(se, ae, vr)
+```
 
 ---
 
