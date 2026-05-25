@@ -42,6 +42,4 @@ jobs:
         with:
           name: MOD-${{ matrix.runtime }}
           path: |
-            build/${{ matrix.runtime }}/skse/plugins/*.dll
-            build/${{ matrix.runtime }}/skse/plugins/*.pdb
-            Distr/${{ matrix.runtime }}/
+            Distr/${{ matrix.runtime }}/SKSE/Plugins/**
