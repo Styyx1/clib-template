@@ -3,6 +3,9 @@ name: Build SKSE Plugin
 on:
   workflow_dispatch:
 
+env:
+  MOD_NAME: MOD    
+
 jobs:
   build:
     runs-on: windows-2022
@@ -40,5 +43,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MOD-${{ matrix.runtime }}
+          name: ${{ env.MOD_NAME }}-${{ matrix.runtime }}
           path: Distr/${{ matrix.runtime }}/SKSE

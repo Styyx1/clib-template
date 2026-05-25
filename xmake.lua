@@ -6,7 +6,10 @@ includes("lib/commonlibsse")
 includes("extern/styyx-utils")
 
 -- set up for project
-set_project("MOD")
+
+local mod_name = "MOD"
+
+set_project(mod_name)
 set_version("1.0.0")
 set_license("MIT")
 
@@ -27,7 +30,7 @@ set_config("rex_toml", true)
 set_config("use-hook-utils", true)
 
 -- add plugin target
-target("MOD")
+target(mod_name)
     add_deps("commonlibsse", {public = true})
     add_deps("styyx-util", {public = true})
 
@@ -38,7 +41,7 @@ target("MOD")
     end
 
     add_rules("skse-template.plugin", {
-        name = "MOD",
+        name = mod_name,
         author = "styyx",
         description = "A plugin template for commonlibsse."
     })
