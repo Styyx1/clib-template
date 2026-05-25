@@ -1,0 +1,47 @@
+name: Build SKSE Plugin
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    strategy:
+      matrix:
+        runtime: [AE, SE]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Setup XMake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          if ("${{ matrix.runtime }}" -eq "AE") {
+            xmake f -m releasedbg --skyrim_ae=true
+          } else {
+            xmake f -m releasedbg --skyrim_ae=false
+          }
+
+      - name: Build
+        run: xmake
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MOD-${{ matrix.runtime }}
+          path: |
+            build/${{ matrix.runtime }}/skse/plugins/*.dll
+            build/${{ matrix.runtime }}/skse/plugins/*.pdb
+            Distr/${{ matrix.runtime }}/
