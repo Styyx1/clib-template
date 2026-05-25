@@ -28,9 +28,9 @@ jobs:
         with:
           xmake-version: latest
           build-cache: true
-          build-cache-key: 'windows-ci'
           package-cache: true
-          package-cache-key: 'windows-ci'
+          build-cache-key: windows-ci-${{ hashFiles('xmake.lua', 'src/**') }}
+          package-cache-key: windows-ci-${{ hashFiles('xmake.lua') }}
 
       - name: Configure
         shell: pwsh
