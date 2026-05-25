@@ -29,6 +29,8 @@ jobs:
           xmake-version: latest
           build-cache: true
           build-cache-key: 'windows-ci'
+          package-cache: true
+          package-cache-key: 'windows-ci'
 
       - name: Configure
         shell: pwsh
