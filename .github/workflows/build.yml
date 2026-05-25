@@ -41,5 +41,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MOD-${{ matrix.runtime }}
-          path: |
-            Distr/${{ matrix.runtime }}/SKSE/Plugins/**
+          path: Distr/${{ matrix.runtime }}/SKSE
