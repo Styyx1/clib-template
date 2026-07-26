@@ -2,8 +2,7 @@
 
 A CommonLibSSE plugin template using [xmake](https://xmake.io) as the build system, with integration of [styyx-utils](https://github.com/Styyx1/StyyxUtils).
 
-Supports **Skyrim 1.5.97**, **Skyrim 1.6.1130+**, and optionally **Skyrim VR** from a single codebase but with separate DLLs.
-Flat Skyrim builds use the `lib/commonlibsse` submodule. VR builds use the `lib/commonlibVR` submodule. The two CommonLib submodules are selected by build config and are not included at the same time.
+Supports **Skyrim 1.5.97**, **Skyrim 1.6.1130+** with separate DLLs.
 
 ---
 
@@ -27,7 +26,7 @@ git clone --recurse-submodules https://github.com/your-name/your-plugin-name
 cd your-plugin-name
 ```
 
-The ``--recurse-submodules`` is important, it pulls in CommonLibSSE, CommonLibVR, and styyx-utils automatically.
+The ``--recurse-submodules`` is important, it pulls in CommonLibSSE and styyx-utils automatically.
 
 **Cloning directly?** If you cloned without the flag, run:
 ```bash
@@ -48,12 +47,6 @@ For **Skyrim SE**:
 xmake f --skyrim_ae=false
 ```
 
-For **Skyrim VR**:
-
-```bash
-xmake f --skyrim_vr=true
-```
-
 ### 3. Build
 
 ```bash
@@ -64,34 +57,21 @@ The compiled ``.dll`` and ``.pdb`` are automatically copied to:
 ```
 Distr/AE/SKSE/Plugins/   (AE build)
 Distr/SE/SKSE/Plugins/   (SE build)
-Distr/VR/SKSE/Plugins/   (VR build)
 ```
 
 ### 4. Rename the plugin
 
-In ``xmake.lua``, replace all occurrences of ``plugin-template`` with your plugin name:
-
-```lua
-set_project("your-plugin-name")
-
-target("your-plugin-name")
-    add_rules("commonlibsse.plugin", {
-        name = "your-plugin-name",
-        author = "your-name",
-        description = "Your plugin description."
-    })
-```
+In ``xmake.lua``, replace  the ``"MOD"`` in``local mod_name = "MOD"`` with your plugin name:
 
 ---
 
 ## xmake Config Options
 
-Set options with `xmake f --option=value` before building, or use ``set_config("setting_name", true/false)`` in the xmake.lua
+Set options with ``set_config("setting_name", true/false)`` in the xmake.lua
 
 | Option | Default | Description |
 | -       |-         | -            |
 | ``skyrim_ae``| ``true`` | Target Skyrim AE. Set to``false`` for SE |
-| ``skyrim_vr``| ``false`` | Target Skyrim VR. This switches the CommonLib dependency from `lib/commonlibsse` to `lib/commonlibVR` |
 | ``use-hook-utils``| ``false`` | Enable hooking utilities from styyx-utils (pulls in xbyak) |
 | ``skse_xbyak``| ``false`` | Enable xbyak support in CommonLibSSE directly |
 | ``rex_toml``| ``false`` | Enable TOML config file support via CommonLibSSE |
@@ -124,20 +104,11 @@ This will:
 1. Build the AE version → `Distr/AE/SKSE/Plugins/`
 2. Build the SE version → `Distr/SE/SKSE/Plugins/`
 3. Restore the default AE configuration
-
-To build only Skyrim VR:
-
-```bash
-xmake shiprelease-vr
-```
-
-This builds the VR version to `Distr/VR/SKSE/Plugins/`.
-
 ---
 
 ## Runtime differences
 
-Use `SKSE_TEMPLATE_SKYRIM_SE`, `SKSE_TEMPLATE_SKYRIM_AE`, or `SKSE_TEMPLATE_SKYRIM_VR` when your plugin needs runtime-specific code paths.
+Use `SKSE_TEMPLATE_SKYRIM_SE`, `SKSE_TEMPLATE_SKYRIM_AE` when your plugin needs runtime-specific code paths.
 
 For relocation values, the template provides:
 
@@ -156,7 +127,8 @@ This template includes [styyx-utils](https://github.com/Styyx1/StyyxUtils) as a 
 
 To use it, simply include the main header in your precompiled header:
 
-mind, using the main header does not pull in ``st-ui.h`` which could be used for SKSE Menu Framework integration
+mind, using the main header does not pull in ``st-fui.h`` which could be used for FLICK menu integration
+enable it with ``set_config("use-fuck", true)``
 
 ```cpp
 #include <styyx-utils.h>
