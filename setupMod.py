@@ -46,8 +46,8 @@ def main():
     text = path.read_text(encoding="utf-8")
     wf = workflow_path.read_text(encoding="utf-8")
 
-    change_xmakefile(text, config)
-    change_workflow(wf, config)
+    text = change_xmakefile(text, config)
+    wf = change_workflow(wf, config)
 
     path.write_text(text, encoding="utf-8")
     workflow_path.write_text(wf, encoding="utf-8")
