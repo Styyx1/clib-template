@@ -28,6 +28,7 @@ includes("xmake-rules.lua")
 set_config("skyrim_ae",true)
 set_config("rex_toml", true)
 set_config("use-hook-utils", true)
+--{{ADDITIONAL CONFIGS}}--
 
 -- add plugin target
 target(mod_name)
