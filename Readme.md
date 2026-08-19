@@ -4,15 +4,29 @@ A CommonLibSSE plugin template using [xmake](https://xmake.io) as the build syst
 
 Supports **Skyrim 1.5.97**, **Skyrim 1.6.1130+** with separate DLLs.
 
+## Features
+
+- C++23
+- Skyrim 1.5.97 support
+- Skyrim 1.6+ support
+- CommonlibSSE and StyyxUtil as submodules
+- TOML support via CommonlibSSE
+- GitHub action for building for both versions
+- VS Code/clangd setup
+- easy project setup via ``moddata.toml`` and the ``setupMod.py`` script
+
 ---
 
-## Prerequisites
+## Requirements
 
-| Tool                                                      | Notes                                             |
-| --------------------------------------------------------- | ------------------------------------------------- |
-| [Visual Studio 2022](https://visualstudio.microsoft.com/) | With the**Desktop development with C++** workload |
-| [xmake](https://xmake.io/#/guide/installation)            | v2.8.2 or later                                   |
-| [Git](https://git-scm.com/)                               | For general interaction with github               |
+Requirements are for Windows cause on linux, there's a lot more you need to set up. You can not build a plugin with this template on linux!
+
+| Tool                                                                          | Notes                                             |
+| ----------------------------------------------------------------------------- | ------------------------------------------------- |
+| [Visual Studio 2022](https://visualstudio.microsoft.com/)                     | With the**Desktop development with C++** workload |
+| [xmake](https://xmake.io/#/guide/installation)                                | v2.8.2 or later                                   |
+| [Git](https://git-scm.com/)                                                   | For general interaction with github               |
+| [Python 3.11 or newer](https://www.python.org/downloads/release/python-3147/) | Required for ``setupMod.py``                      |
 
 ---
 
@@ -33,35 +47,65 @@ The ``--recurse-submodules`` is important, it pulls in CommonLibSSE and styyx-ut
 git submodule update --init --recursive
 ```
 
-### 2. Configure the project
+### 2. Configure your plugin data
 
-For **Skyrim AE** (default):
+This template uses ``moddata.toml`` to configure your xmake.lua and the workflow file
 
-```bash
-xmake f --skyrim_ae=true
+The default looks like this:
+```toml
+name = "PLACEHOLDER"
+license = "PLACEHOLDER"
+workflowname = "PLACEHOLDER"
+modversion = "1.0.0"
+
+
+[configs]
+#use-fui = true
+```
+Change the values to match what you need:
+```toml
+name = "MySKSEPlugin"
+license = "GPL-3.0"
+workflowname = "MySKSEPlugin"
+modversion = "4.2.0"
+
+
+[configs]
+use-fui = true
+rex_ini = true
+whatever_setting = 69
 ```
 
-For **Skyrim SE**:
+### 3. Run the setup script
 
+Run:
 ```bash
-xmake f --skyrim_ae=false
+python setupMod.py
 ```
+This will update your xmake.lua and workflow file. 
 
-### 3. Build
+### 4. Build
+
+#### Skyrim 1.6+
+
+It is the default config and can be run like this:
 
 ```bash
 xmake
 ```
 
-The compiled ``.dll`` and ``.pdb`` are automatically copied to:
-```
-Distr/AE/SKSE/Plugins/   (AE build)
-Distr/SE/SKSE/Plugins/   (SE build)
+The compiled binaries are placed in ``Distr/AE/SKSE/Plugins/``
+
+#### Skyirm 1.5.97
+
+Configure xmake for it:
+
+```bash
+xmake f --skyrim_ae=false
+xmake
 ```
 
-### 4. Rename the plugin
-
-In ``xmake.lua``, replace  the ``"MOD"`` in``local mod_name = "MOD"`` with your plugin name:
+The compiled binaries are placed in ``Distr/SE/SKSE/Plugins/``
 
 ---
 
@@ -69,14 +113,15 @@ In ``xmake.lua``, replace  the ``"MOD"`` in``local mod_name = "MOD"`` with your 
 
 Set options with ``set_config("setting_name", true/false)`` in the xmake.lua
 
-| Option | Default | Description |
-| -       |-         | -            |
-| ``skyrim_ae``| ``true`` | Target Skyrim AE. Set to``false`` for SE |
+| Option            | Default   | Description                                                |
+| -                 |-          | -                                                          |
+| ``skyrim_ae``     | ``true``  | Target Skyrim AE. Set to``false`` for SE                   |
 | ``use-hook-utils``| ``false`` | Enable hooking utilities from styyx-utils (pulls in xbyak) |
-| ``skse_xbyak``| ``false`` | Enable xbyak support in CommonLibSSE directly |
-| ``rex_toml``| ``false`` | Enable TOML config file support via CommonLibSSE |
-| ``rex_json``| ``false`` | Enable JSON config file support via CommonLibSSE |
-| ``rex_ini``| ``false`` | Enable INI config file support via CommonLibSSE |
+| ``use-fui``       | ``false`` | Enable FLICK menu support                                  |
+| ``skse_xbyak``    | ``false`` | Enable xbyak support in CommonLibSSE directly              |
+| ``rex_toml``      | ``false`` | Enable TOML config file support via CommonLibSSE           |
+| ``rex_json``      | ``false`` | Enable JSON config file support via CommonLibSSE           |
+| ``rex_ini``       | ``false`` | Enable INI config file support via CommonLibSSE            |
 
 ### Example: Enable hook utilities
 
@@ -84,7 +129,9 @@ Set options with ``set_config("setting_name", true/false)`` in the xmake.lua
 xmake f --skyrim_ae=true --use-hook-utils=true
 xmake
 ```
+
 or in xmake.lua
+
 ```lua
 set_config("use-hook-utils", true)
 ```
@@ -104,6 +151,7 @@ This will:
 1. Build the AE version → `Distr/AE/SKSE/Plugins/`
 2. Build the SE version → `Distr/SE/SKSE/Plugins/`
 3. Restore the default AE configuration
+
 ---
 
 ## Runtime differences

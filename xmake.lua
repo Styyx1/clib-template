@@ -30,6 +30,7 @@ set_config("rex_toml", true)
 set_config("use-hook-utils", true)
 --{{ADDITIONAL CONFIGS}}--
 
+
 -- add plugin target
 target(mod_name)
     add_deps("commonlibsse", {public = true})
